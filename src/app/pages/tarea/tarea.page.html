@@ -1,0 +1,79 @@
+<ion-content>
+  <ion-header class="ion-no-border">
+      <ion-toolbar color="dark">
+          <ion-buttons slot="start">
+              <ion-menu-button color="primary" menu="first"></ion-menu-button>
+          </ion-buttons>
+          <ion-title>Crear Tareas</ion-title>
+      </ion-toolbar>
+  </ion-header>
+  <ion-card class="padding-extra">
+      <ion-item *ngIf="proyects != null">
+          <ion-label>Selecciona un proyecto (Opcional)</ion-label>
+          <ion-select [(ngModel)]="taskProject" multiple="false" placeholder="Selecciona Projecto" (ionChange)="getSupervisor($event)">
+              <ion-select-option value="none">Sin projecto</ion-select-option>
+              <ion-select-option *ngFor="let item of proyects" [value]="item">{{item.pName}}</ion-select-option>
+          </ion-select>
+      </ion-item>
+      <ion-item [color]="sup_filled">
+          <ion-label>Selecciona un Supervisor (Opcional)</ion-label>
+          <ion-select [disabled]="supEditable" [(ngModel)]="supAcrom" interface="popover" placeholder="Seleccione a la persona que supervisa el proyecto (Opcional)">
+              <ion-select-option value="dmenes">Danna Meneses</ion-select-option>
+              <ion-select-option value="cramos">Camilo Ramos</ion-select-option>
+              <ion-select-option value="sardil">Sebastian Ardila</ion-select-option>
+              <ion-select-option value="aquin">Alfonso Quiñonez</ion-select-option>
+              <ion-select-option value="jquin">Julian Quiñonez</ion-select-option>
+          </ion-select>
+      </ion-item>
+      <ion-item [color]="name_filled">
+          <ion-label>A quien asignaras</ion-label>
+          <ion-select [(ngModel)]="userName" interface="popover" placeholder="Seleccione a la persona que lo realizara" (ionChange)="checkInfoName($event)">
+              <ion-select-option value="eateh">Esteban Atehortua</ion-select-option>
+              <ion-select-option value="ndegra">Nathalia DeGracia</ion-select-option>
+              <ion-select-option value="josman">Johan Osman</ion-select-option>
+              <ion-select-option value="drodri">Daniel Rodriguez</ion-select-option>
+              <ion-select-option value="dmenes">Danna Meneses</ion-select-option>
+              <ion-select-option value="dcaice">Daniel Caicedo</ion-select-option>
+              <ion-select-option value="cramos">Camilo Ramos</ion-select-option>
+              <ion-select-option value="sardil">Sebastian Ardila</ion-select-option>
+              <ion-select-option value="lcuerv">Laura Cuervo</ion-select-option>
+              <ion-select-option value="aquin">Alfonso Quiñonez</ion-select-option>
+              <ion-select-option value="jquin">Julian Quiñonez</ion-select-option>
+          </ion-select>
+      </ion-item>
+      <ion-item [color]="prior_filled">
+          <ion-label>Prioridad</ion-label>
+          <ion-select [(ngModel)]="priority" interface="popover" value="low" (ionChange)="checkInfoPrior($event)">
+              <ion-select-option value="low">Baja</ion-select-option>
+              <ion-select-option value="medium">Media</ion-select-option>
+              <ion-select-option value="high">Alta</ion-select-option>
+              <ion-select-option value="emerg">Emergencia</ion-select-option>
+          </ion-select>
+      </ion-item>
+      <ion-item [color]="desc_filled">
+          <ion-label position="floating">Descripcion de la tarea</ion-label>
+          <br>
+          <ion-textarea [(ngModel)]="description" rows="6" placeholder="modificar el header..." (ionChange)="checkInfoDesc($event)"></ion-textarea>
+      </ion-item>
+      <ion-item>
+          <ion-label>Agrega soportes o foto</ion-label>
+          <ion-button (click)="file.click()" expand="block" color="success" shape="round">
+              Agregar
+          </ion-button>
+          <input class="ion-hide" #file type="file" (change)="changeListener($event)" id="file-input" accept="image/png, image/jpeg">
+          <!--                <ion-input class="ion-hide" type="file" id="file-input" #file accept="image/*" (change)="changeListener($event)"></ion-input>-->
+      </ion-item>
+      <ion-row>
+          <ion-col size="4" *ngFor="let item of files_uploaded">
+              <div *ngIf="item && item !=''" class="bgImg" [style.backgroundImage]="'url('+item+')'">
+                  <ion-button (click)="eliminarImg(item)" expand="block" shape="round">
+                      eliminar
+                  </ion-button>
+              </div>
+          </ion-col>
+      </ion-row>
+      <ion-button (click)="crearTarea()" expand="block">
+          Crear Tarea
+      </ion-button>
+  </ion-card>
+</ion-content>

@@ -1,0 +1,8 @@
+<p *ngIf="inf">
+  {{mss}}
+</p>
+<div *ngIf="!inf">
+  <img class="bigImg" [src]="mss">
+  <br>
+  <a class="button" [href]="mss" target="_blank">Abrir en otra pestaña</a>
+</div>

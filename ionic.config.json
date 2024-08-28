@@ -1,0 +1,7 @@
+{
+  "name": "FSAQA-Updated",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

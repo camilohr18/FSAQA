@@ -1,0 +1,62 @@
+<ion-content [fullscreen]="true">
+  <ion-header class="ion-no-border">
+      <ion-toolbar color="dark">
+          <ion-buttons slot="start">
+              <ion-menu-button color="primary" menu="first"></ion-menu-button>
+          </ion-buttons>
+          <ion-title>Proyectos</ion-title>
+      </ion-toolbar>
+  </ion-header>
+  <ion-row color="dark">
+      <ion-col color="dark" size-lg="8" size-sm="12">
+      </ion-col>
+      <ion-col class="ion-text-end" size-lg="4" size-sm="12">
+          <ion-button (click)="createProjyct()" expand="block" shape="round">
+              Crear Proyecto
+          </ion-button>
+      </ion-col>
+  </ion-row>
+  <div>
+      <ion-grid>
+          <ion-row>
+              <ion-col size-lg="8" size-sm="12">
+                  <ion-searchbar mode="ios" placeholder="Buscar proyecto..." animated (ionChange)="onSearchChange($event)" [debounce]="300"></ion-searchbar>
+              </ion-col>
+              <ion-col size-lg="4" size-xs="12">
+                  <ion-item lines="none">
+                      <ion-label>Buscar por...</ion-label>
+                      <ion-select interface="popover" value="pName" okText="Okay" [(ngModel)]="searchType" cancelText="Dismiss" mode="ios">
+                          <ion-select-option value="pName">Nombre de proyecto</ion-select-option>
+                          <ion-select-option value="creator">Creador</ion-select-option>
+                      </ion-select>
+                  </ion-item>
+              </ion-col>
+          </ion-row>
+      </ion-grid>
+  </div>
+  <ion-card>
+      <ion-card-header>
+      </ion-card-header>
+      <ion-list *ngFor="let proj of currentProyects | filtroProyecto:searchText:searchType">
+          <ion-card class="ion-no-margin ion-margin-horizontal" color="medium">
+              <ion-grid>
+                  <ion-row class="ion-justify-content-around ion-align-items-center">
+                      <ion-col size-lg="9" size-sm="12" color="medium">
+                          <ion-item lines="none" color="medium">
+                              <ion-label class="ion-no-margin">
+                                  <h3>Projecto: <strong>{{proj.pName}}</strong></h3>
+                                  <p> Supervisor: <strong>{{ proj.supName | titlecase }}</strong></p>
+                              </ion-label>
+                          </ion-item>
+                      </ion-col>
+                      <ion-col size-lg="3" size-sm="12" class="ion-justify-content-around">
+                          <ion-button (click)="openProyect(proj.id)" expand="block" shape="round" size="small">
+                              Ver Proyecto
+                          </ion-button>
+                      </ion-col>
+                  </ion-row>
+              </ion-grid>
+          </ion-card>
+      </ion-list>
+  </ion-card>
+</ion-content>

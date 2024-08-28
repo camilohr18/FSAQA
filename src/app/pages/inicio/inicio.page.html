@@ -1,0 +1,241 @@
+<ion-content>
+    <ion-header class="ion-no-border">
+        <ion-toolbar class="ion-no-border" color="dark">
+            <ion-buttons slot="start">
+                <ion-menu-button menu="first"></ion-menu-button>
+            </ion-buttons>
+            <ion-title>
+                Inicio
+            </ion-title>
+        </ion-toolbar>
+    </ion-header>
+
+    <!-- Segmentos  -->
+    <div class="ion-hide-sm-down">
+        <ion-segment class="ion-hide-sm-down" scrollable="true" class="ion-justify-content-start" value="asignadas" (ionChange)="segmentChanged($event)">
+            <ion-segment-button class="ion-hide-md-up" value="asignadas" class="ion-text-capitalize">
+                <ion-label class="hide-xs">Tareas Asignadas
+                    <ion-badge *ngIf="taskToReview.length != 0" color="danger" mode="ios"><label style="color:white">{{taskToReview.length}}</label></ion-badge>
+                    <ion-badge *ngIf="taskToReview.length === 0" color="success" mode="ios"><label style="color:brown">{{taskToReview.length}}</label></ion-badge>
+                </ion-label>
+
+            </ion-segment-button>
+            <ion-segment-button value="pendientes" class="ion-text-capitalize">
+                <ion-label>Tareas Pendientes
+                    <ion-badge *ngIf="taskAsigned.length != 0" color="danger" mode="ios"><label style="color:white">{{taskCreated.length}}</label></ion-badge>
+                    <ion-badge *ngIf="taskAsigned.length === 0" color="success" mode="ios"><label style="color:brown">{{taskCreated.length}}</label></ion-badge>
+                </ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="creadas" class="ion-text-capitalize">
+                <ion-label>Tareas Creadas
+                    <ion-badge *ngIf="taskCreated.length != 0" color="danger" mode="ios"><label style="color:white">{{taskCreated.length}}</label></ion-badge>
+                    <ion-badge *ngIf="taskCreated.length === 0" color="success" mode="ios"><label style="color: brown">{{taskCreated.length}}</label></ion-badge>
+                </ion-label>
+            </ion-segment-button>
+        </ion-segment>
+    </div>
+    <div class="ion-hide-sm-up">
+        <ion-segment scrollable="true" color="secondary" class="ion-justify-content-start" value="asignadas" (ionChange)="segmentChanged($event)">
+            <ion-segment-button class="ion-hide-md-up" color="secondary" value="asignadas" class="ion-text-capitalize">
+                <ion-label>
+                    <ion-icon size="large" name="bookmark-outline"></ion-icon>
+                    <ion-badge *ngIf="taskToReview.length === 0" color="success" mode="ios"><label style="color:white">{{taskToReview.length}}</label></ion-badge>
+                    <ion-badge *ngIf="taskToReview.length != 0" color="danger" mode="ios"><label style="color:brown">{{taskToReview.length}}</label></ion-badge>
+                </ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="pendientes" class="ion-text-capitalize">
+                <ion-label>
+                    <ion-icon size="large" name="alert-circle-outline"></ion-icon>
+                    <ion-badge *ngIf="taskAsigned.length != 0" color="danger" mode="ios"><label style="color:white">{{taskCreated.length}}</label></ion-badge>
+                    <ion-badge *ngIf="taskAsigned.length === 0" color="success" mode="ios"><label style="color:brown">{{taskCreated.length}}</label></ion-badge>
+                </ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="creadas" class="ion-text-capitalize">
+                <ion-label>
+                    <ion-icon size="large" name="hammer-outline"></ion-icon>
+                    <ion-badge *ngIf="taskCreated.length != 0" color="danger" mode="ios"><label style="color:white">{{taskCreated.length}}</label></ion-badge>
+                    <ion-badge *ngIf="taskCreated.length === 0" color="success" mode="ios"><label style="color:white">{{taskCreated.length}}</label></ion-badge>
+                </ion-label>
+            </ion-segment-button>
+        </ion-segment>
+    </div>
+
+    <!-- Aqui termina la seccion interna de las notificaciones-->
+    <ion-card *ngIf="taskToReview.length != 0 && notiReview" color="warning">
+        <ion-card-header>
+            <span>Tienes  tareas pendientes por <b>revisar</b></span>
+            <ion-icon style="float: right;" (click)="notiReview = false" name="close-circle"></ion-icon>
+        </ion-card-header>
+    </ion-card>
+    <ion-card *ngIf="tasks.length != 0 && notiAsigned" color="warning">
+        <ion-card-header>
+            <span>Tienes {{tasks.length}} tareas nuevas <b>asignadas</b></span>
+            <ion-icon style="float: right;" (click)="notiAsigned = false" name="close-circle"></ion-icon>
+        </ion-card-header>
+    </ion-card>
+
+    <!-- Aqui comienza la seccion interna del tab de "Asignadas"-->
+    <div *ngIf="segment === 'asignadas'">
+        <div>
+            <ion-grid>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-searchbar mode="ios" placeholder="Buscar tarea..." animated (ionInput)="onSearchChange($event)" [debounce]="100"></ion-searchbar>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </div>
+        <ion-card>
+            <ion-list *ngFor="let task of taskToMe">
+                <ion-list-header>
+                    <h3>{{ task.desc | slice:0:50}}</h3>
+                    <ion-badge mode="ios" [color]="getPiority(task.priority)">{{task.priority |titlecase}}</ion-badge>
+                </ion-list-header>
+                <ion-item>
+                    <ion-label class="ion-text-wrap">
+                        <p><b>Descripcion:</b> {{ task.desc }}</p>
+                        <p><b>Asignada por:</b> {{task.creatorName}}</p>
+                        <p><b>Fecha de creacion:</b> {{ task.dCreada }}</p>
+                        <section>
+                            <ion-button style="min-width: 170px !important;" (click)="openTask(task.id)" shape="round" size="small">
+                                Ver Tarea
+                            </ion-button>
+                            <ion-button *ngIf="task.status === 'creada'" style="min-width: 170px !important;" color="success" (click)="aceptTask(task)" shape="round" size="small">
+                                Aceptar tarea
+                            </ion-button>
+                        </section>
+                    </ion-label>
+                </ion-item>
+            </ion-list>
+        </ion-card>
+    </div>
+    <!-- Aqui termina la seccion interna del tab de "Asignadas"-->
+
+    <!-- Aqui comienza la seccion interna del tab de "Creadas"-->
+    <div *ngIf="segment === 'creadas'">
+        <div>
+            <ion-grid>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-searchbar mode="ios" placeholder="Buscar tarea..." animated (ionInput)="onSearchChange($event)" [debounce]="100"></ion-searchbar>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </div>
+        <ion-card *ngIf="taskCreated.length === 0">
+            <ion-card-header>
+                <ion-card-title>Aun no has creado ninguna tarea</ion-card-title>
+                <ion-card-subtitle>Cuando crees alguna tarea para ti o alguien mas estas se reflejaran aqui</ion-card-subtitle>
+            </ion-card-header>
+        </ion-card>
+        <ion-card *ngIf="taskCreated.length != 0">
+            <ion-list *ngFor="let task of taskCreated  | filtro:searchText" class="ion-text-nowrap">
+                <ion-list-header>
+                    <h3>{{ task.desc | slice:0:50}}...</h3>
+                    <ion-badge mode="ios" [color]="getPiority(task.priority)">{{task.priority |titlecase}}</ion-badge>
+                </ion-list-header>
+                <ion-item>
+                    <ion-label class="ion-text-wrap">
+                        <p class="ion-padding-bottom"><b>Descripcion:</b> {{ task.desc }}</p>
+                        <p class="ion-padding-bottom"><b>Asignada por:</b> {{task.creatorName}}</p>
+                        <p class="ion-padding-bottom"><b>Asignada a:</b> {{task.asignedName}}</p>
+                        <p class="ion-padding-bottom"><b>Fecha de creacion:</b> {{ task.dCreada }}</p>
+                        <section>
+                            <ion-button style="min-width: 170px !important;" (click)="openTask(task.id)" shape="round" size="small">
+                                Ver Tarea
+                            </ion-button>
+                            <ion-button *ngIf="task.status === 'procesando'" style="min-width: 170px !important;" color="warning" (click)="changeTaskStatus(task, 'rev')" shape="round" size="small">
+                                Finalizar con revision
+                            </ion-button>
+                            <ion-button *ngIf="task.status === 'procesando' || task.status === 'revision'" style="min-width: 170px !important;" color="success" (click)="changeTaskStatus(task, 'done')" shape="round" size="small">
+                                Finalizar sin revision
+                            </ion-button>
+                        </section>
+                    </ion-label>
+                </ion-item>
+            </ion-list>
+        </ion-card>
+    </div>
+    <!-- Aqui termina la seccion interna del tab de "Creadas"-->
+
+    <!-- Aqui comienza la seccion interna del tab de "Pendientes"-->
+    <div *ngIf="segment === 'pendientes'">
+        <div>
+            <ion-grid>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-searchbar mode="ios" placeholder="Buscar tarea..." animated (ionInput)="onSearchChange($event)" [debounce]="100"></ion-searchbar>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </div>
+        <ion-card *ngIf="taskAsigned.length === 0">
+            <ion-card-header>
+                <ion-card-title>Aun no tienes ninguna tarea asignada</ion-card-title>
+                <ion-card-subtitle>Cuando te asignen alguna tarea estas se reflejaran aqui</ion-card-subtitle>
+            </ion-card-header>
+        </ion-card>
+        <ion-card *ngIf="taskAsigned.length != 0">
+            <ion-list *ngFor="let task of taskAsigned | filtro:searchText" class="ion-text-nowrap">
+                <!--aqui esta la prueba inicial-->
+                <ion-list-header>
+                    <h3>{{ task.desc | slice:0:50}}...</h3>
+                    <ion-badge mode="ios" [color]="getPiority(task.priority)">{{task.priority |titlecase}}</ion-badge>
+                </ion-list-header>
+                <ion-item>
+                    <ion-label class="ion-text-wrap">
+                        <p class="ion-padding-bottom"><b>Descripcion:</b> {{ task.desc }}</p>
+                        <p class="ion-padding-bottom"><b>Asignada por:</b> {{task.creatorName}}</p>
+                        <p class="ion-padding-bottom"><b>Fecha de creacion:</b> {{ task.dCreada }}</p>
+                        <section>
+                            <ion-button style="min-width: 170px !important;" (click)="openTask(task.id)" shape="round" size="small">
+                                Ver Tarea
+                            </ion-button>
+                            <ion-button *ngIf="task.status === 'procesando'" style="min-width: 170px !important;" color="warning" (click)="changeTaskStatus(task, 'rev')" shape="round" size="small">
+                                Finalizar con revision
+                            </ion-button>
+                            <ion-button *ngIf="task.status === 'procesando' || task.status === 'revision'" style="min-width: 170px !important;" color="success" (click)="changeTaskStatus(task, 'done')" shape="round" size="small">
+                                Finalizar sin revision
+                            </ion-button>
+                        </section>
+                    </ion-label>
+                </ion-item>
+            </ion-list>
+
+        </ion-card>
+    </div>
+</ion-content>
+
+<!--Esta seccion es el codigo anterior al rediseño
+
+    <ion-list *ngFor="let task of taskCreated">
+                    <ion-card [color]="getPiority(task.priority)" class="ion-no-margin ion-margin-horizontal">
+                        <ion-grid>
+                            <ion-row class="ion-justify-content-around ion-align-items-center">
+                                <ion-col size="6">
+                                    <ion-item lines="none" [color]="getPiority(task.priority)">
+                                        <ion-label class="ion-no-margin">
+                                            <h3 style="color: black;">Creada por: <strong>{{task.creatorName}}</strong></h3>
+                                            <p style="color: black;"> Asignada a: <strong>{{ task.asignedName | titlecase }}</strong></p>
+                                            <p style="color: black;"> Status: <strong>{{ task.status | titlecase }}</strong></p>
+                                            <p style="color: black;">Descripcion: {{ task.desc }}</p>
+                                        </ion-label>
+                                    </ion-item>
+                                </ion-col>
+                                <ion-col size="3">
+                                    <ion-item lines="none" [color]="getPiority(task.priority)">
+                                        <ion-label class="ion-no-margin">
+                                            <p style="color: black;">Fecha de creacion: {{ task.dCreada }}</p>
+                                        </ion-label>
+                                    </ion-item>
+                                </ion-col>
+
+                                <ion-col size="3" class="ion-justify-content-around">
+                                    <ion-button (click)="openTask(task.id)" expand="block" shape="round" size="small">
+                                        Ver Tarea
+                                    </ion-button>
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
+                    </ion-card>
+                </ion-list>-->

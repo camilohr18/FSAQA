@@ -1,0 +1,45 @@
+
+<ion-content>
+  <ion-header class="ion-no-border">
+      <ion-toolbar color="dark">
+          <ion-buttons slot="start">
+              <ion-menu-button color="primary" menu="first"></ion-menu-button>
+          </ion-buttons>
+          <ion-title>Archivados</ion-title>
+      </ion-toolbar>
+  </ion-header>
+  <div>
+      <ion-grid>
+          <ion-row>
+              <ion-col size="12">
+                  <ion-searchbar mode="ios" placeholder="Buscar tarea..." animated (ionChange)="onSearchChange($event)" [debounce]="300"></ion-searchbar>
+              </ion-col>
+          </ion-row>
+      </ion-grid>
+  </div>
+  <ion-card>
+      <ion-list *ngFor="let task of allTask| filtro:searchText">
+          <ion-card [color]="getPiority(task.priority)" class="ion-no-margin ion-margin-horizontal">
+              <ion-grid>
+                  <ion-row class="ion-justify-content-around ion-align-items-center">
+                      <ion-col size-lg="9" size-sm="12">
+                          <ion-item lines="none" [color]="getPiority(task.priority)">
+                              <ion-label class="ion-no-margin ion-text-wrap">
+                                  <h3 style="color: black;"><b>Descripcion:</b> {{ task.desc }}</h3>
+                                  <h3 style="color: black;"><b>Creada por:</b> {{task.creatorName}}</h3>
+                                  <p style="color: black;"><b>Status:</b> {{ task.status | titlecase }}</p>
+                                  <p style="color: black;"><b>Fecha de creacion:</b> {{ task.dCreada }}</p>
+                              </ion-label>
+                          </ion-item>
+                      </ion-col>
+                      <ion-col size-lg="3" size-sm="12" class="ion-justify-content-around">
+                          <ion-button (click)="openTask(task.id)" expand="block" shape="round" size="small">
+                              Ver Tarea
+                          </ion-button>
+                      </ion-col>
+                  </ion-row>
+              </ion-grid>
+          </ion-card>
+      </ion-list>
+  </ion-card>
+</ion-content>
